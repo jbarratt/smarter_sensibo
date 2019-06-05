@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  smarter-sensibo
+  
+  SAM Template to run sensibo 
+
+Globals:
+  Function:
+    Timeout: 5
+
+Resources:
+  SmarterSensiboFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: code/
+      Handler: handler
+      Runtime: go1.x
+      Environment:
+        Variables:
+          SENSIBO_API_KEY: "ssm:/keys/sensibo"
+      Policies:
+      - SSMParameterReadPolicy:
+          ParameterName: "keys/sensibo"
+      Events:
+        Time:
+          Type: Schedule
+          Properties:
+            Schedule: rate(30 minutes)
