@@ -106,7 +106,7 @@ func syncSensibo() {
 			log.Println("Temp over threshold, entering cooling mode")
 			setCooling(&client.State.SmartMode)
 		} else {
-			log.Println("Between temp zones, disabling smart mode")
+			log.Printf("%0.2f F: Between temp zones, disabling smart mode\n", CToF(client.State.Measurements.Temperature))
 			shutdown(&client.State)
 		}
 	} else {
