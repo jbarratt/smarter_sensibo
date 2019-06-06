@@ -10,6 +10,66 @@ Globals:
     Timeout: 5
 
 Resources:
+  SensiboLogGroup:
+    Type: AWS::Logs::LogGroup
+    DependsOn: [SmarterSensiboFunction]
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${SmarterSensiboFunction}
+      RetentionInDays: 7
+  DeadManFilter:
+    Type: AWS::Logs::MetricFilter
+    DependsOn: [SensiboLogGroup]
+    Properties:
+      FilterPattern: "SENSIBO_SETTING_SUCCESS"
+      LogGroupName: !Sub /aws/lambda/${SmarterSensiboFunction}
+      MetricTransformations:
+        -
+          MetricValue: "1"
+          MetricNamespace: "custom/SmarterSensibo"
+          MetricName: "SuccessCount"
+  DeadManAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: "Sensibo Setting Failure"
+      AlarmActions:
+      - !Ref Topic
+      MetricName: "SuccessCount"
+      Namespace: "custom/SmarterSensibo"
+      Threshold: 0
+      ComparisonOperator: LessThanThreshold
+      DatapointsToAlarm: 1
+      TreatMissingData: breaching
+      Period: 10800
+      EvaluationPeriods: 1
+      Statistic: Sum
+      Unit: Count
+  Topic:
+    Type: AWS::SNS::Topic
+    Properties: {}
+  TopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Id: Id1
+        Version: '2012-10-17'
+        Statement:
+        - Sid: Sid1
+          Effect: Allow
+          Principal:
+            AWS: '*' #allow cloudwatch alarms
+          Action: 'sns:Publish'
+          Resource: !Ref Topic
+          Condition:
+            StringEquals:
+              'AWS:SourceOwner': !Ref 'AWS::AccountId'
+      Topics:
+      - !Ref Topic
+  EmailSubscription:
+    Type: 'AWS::SNS::Subscription'
+    Properties:
+      Protocol: email
+      Endpoint: 'jbarratt@serialized.net'
+      TopicArn: !Ref Topic
   SmarterSensiboFunction:
     Type: AWS::Serverless::Function
     Properties:

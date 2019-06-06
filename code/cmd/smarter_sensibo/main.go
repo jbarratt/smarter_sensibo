@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"math"
 	"os"
@@ -122,6 +123,8 @@ func syncSensibo() {
 
 func HandleRequest(ctx context.Context, e events.CloudWatchEvent) error {
 	syncSensibo()
+	// print this so the metric filter can count it
+	fmt.Println("SENSIBO_SETTING_SUCCESS")
 	return nil
 }
 
