@@ -39,7 +39,7 @@ Resources:
       ComparisonOperator: LessThanThreshold
       DatapointsToAlarm: 1
       TreatMissingData: breaching
-      Period: 10800
+      Period: 3600
       EvaluationPeriods: 1
       Statistic: Sum
       Unit: Count
