@@ -86,4 +86,4 @@ Resources:
         Time:
           Type: Schedule
           Properties:
-            Schedule: rate(30 minutes)
+            Schedule: rate(10 minutes)

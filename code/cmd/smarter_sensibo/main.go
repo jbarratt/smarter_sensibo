@@ -88,6 +88,8 @@ func shutdown(pod *sensibo.Pod) {
 func syncSensibo() {
 
 	client := sensibo.NewClient(nil)
+	// TODO make this more conditional. Will require some state knowledge
+	// "If it should be off, and we turned it off already, don't load the state."
 	err := client.LoadState()
 	if err != nil {
 		log.Fatal(err)
@@ -100,10 +102,10 @@ func syncSensibo() {
 
 	if inActiveWindow(now) {
 		log.Println("In an active window")
-		if CToF(client.State.Measurements.Temperature) < 65.0 {
+		if CToF(client.State.Measurements.Temperature) < 66.0 {
 			log.Println("Under threshold, setting warming mode")
 			setWarming(&client.State.SmartMode)
-		} else if CToF(client.State.Measurements.Temperature) > 73.0 {
+		} else if CToF(client.State.Measurements.Temperature) > 71.0 {
 			log.Println("Temp over threshold, entering cooling mode")
 			setCooling(&client.State.SmartMode)
 		} else {
