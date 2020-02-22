@@ -42,7 +42,6 @@ Resources:
       Period: 3600
       EvaluationPeriods: 1
       Statistic: Sum
-      Unit: Count
   Topic:
     Type: AWS::SNS::Topic
     Properties: {}

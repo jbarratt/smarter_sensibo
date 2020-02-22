@@ -50,13 +50,13 @@ func setWarming(sm *sensibo.SmartMode) {
 
 	sm.Enabled = true
 
-	sm.LowTemperatureThreshold = FToC(68.0)
+	sm.LowTemperatureThreshold = FToC(72.0)
 	sm.LowTemperatureState.On = true
 	sm.LowTemperatureState.FanLevel = "strong"
-	sm.LowTemperatureState.TargetTemperature = 80
+	sm.LowTemperatureState.TargetTemperature = 75
 	sm.LowTemperatureState.Mode = "heat"
 
-	sm.HighTemperatureThreshold = FToC(74.0)
+	sm.HighTemperatureThreshold = FToC(76.0)
 	sm.HighTemperatureState.On = false
 }
 
@@ -102,10 +102,10 @@ func syncSensibo() {
 
 	if inActiveWindow(now) {
 		log.Println("In an active window")
-		if CToF(client.State.Measurements.Temperature) < 66.0 {
+		if CToF(client.State.Measurements.Temperature) < 76.0 {
 			log.Println("Under threshold, setting warming mode")
 			setWarming(&client.State.SmartMode)
-		} else if CToF(client.State.Measurements.Temperature) > 71.0 {
+		} else if CToF(client.State.Measurements.Temperature) > 85.0 {
 			log.Println("Temp over threshold, entering cooling mode")
 			setCooling(&client.State.SmartMode)
 		} else {

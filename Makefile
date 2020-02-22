@@ -14,7 +14,7 @@ clean:
 	rm -rf ./code/handler
 
 package:
-	sam package --output-template-file packaged.yaml --s3-bucket $(BUCKET_NAME)
+	aws-vault exec serialized -- sam package --output-template-file packaged.yaml --s3-bucket $(BUCKET_NAME)
 
 deploy:
-	sam deploy --template-file packaged.yaml --stack-name sensibo-app --capabilities CAPABILITY_IAM
+	aws-vault exec --no-session serialized -- sam deploy --template-file packaged.yaml --stack-name sensibo-app --capabilities CAPABILITY_IAM
